@@ -1,27 +1,40 @@
 #!/usr/bin/env python3
 import sys
 import os
+import timeit
 
-# starting frequency 0
-f0 = 0
-freqset = set()
-freqset.add(f0)
-with open('input.txt', 'r') as f:
-    for l in f:
-        f0 += int(l.strip())
-        #print(f0)
-        #print(freqset)
-        #print("")
+### NOTE have to keep applying the list of frequency changes ad infinitum
 
-        #if f0 in freqset:
-        #    print("found duplicate: {}".format(f0))
-        #else:
-        #    print("no duplicate: {}".format(f0))
+### from reddit Alfred456654
+def foo():
+    with open('input.txt', 'r') as of:
+        nbs = list(map(int, list(map(str.strip, of.readlines()))))
+        freqs_reached = set([0])
+        freq = 0
+        while True:
+            for nb in nbs:
+                freq += nb
+                if freq in freqs_reached:
+                    return freq
+                freqs_reached.add(freq)
 
-        print(f0)
+def bar():
+    with open('input.txt', 'r') as f:
+        dflist = list(map(int, list(map(str.strip, f.readlines()))))
 
-        freqset.add(f0)
+    # starting frequency 0
+    f0 = 0
+    freqlist = [0]
+    while True:
+        for df in dflist:
+            f0 += df
+            if f0 in freqlist: 
+                return f0
+            else:
+                freqlist.append(f0)
+    
 
-print("final freq = {}".format(f0))
-print("len(freqset) = {}".format(len(freqset)))
+print("first dupe w/ foo = {}".format(foo()))
+
+print("first dupe w/ bar = {}".format(bar()))
 
