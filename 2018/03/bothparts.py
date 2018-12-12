@@ -35,6 +35,37 @@ def sum_map():
     return s
 
 
+def check_claim(c):
+    global fabricmap
+
+    solo_p = True
+
+    for i in range(c[0][0], c[0][0]+c[1][0]):
+        for j in range(c[0][1], c[0][1]+c[1][1]):
+            if fabricmap[i][j] != 1:
+                solo_p = False
+                break
+
+    return solo_p
+
+
+def solo_claim(claims):
+    global fabricmap
+
+    found = False
+    clid = 0
+    while not found:
+        for c in claims:
+            clid += 1
+            if not check_claim(c):
+                continue
+            else:
+                found = True
+                break
+
+    return clid
+
+
 if __name__ == '__main__':
     # init. fabricmap
     fabricmap = [[0 for i in range(1000)] for j in range(1000)]
@@ -54,3 +85,4 @@ if __name__ == '__main__':
     print("sum(fabricmap) = {}".format(sum_map()))
     print("two or more = {}".format(two_or_more_claims()))
 
+    print("solo claim = {}".format(solo_claim(claims)))
