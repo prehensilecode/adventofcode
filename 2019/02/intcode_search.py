@@ -63,6 +63,7 @@ def main():
 
     for verb in range(100):
         for noun in range(100):
+            # reset prog
             with open(args.infile[0], 'r') as f:
                 prog = [ int(i) for i in f.read().strip().split(',')]
 
