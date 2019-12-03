@@ -4,6 +4,7 @@ import os
 import argparse
 
 prog = None
+refprog = None
 
 def one(i1, i2, i3):
     global prog
@@ -47,6 +48,7 @@ def compute():
 
 def main():
     global prog
+    global refprog
     
     parser = argparse.ArgumentParser("AoC 2.1")
     parser.add_argument('infile', metavar='infile', type=str, nargs=1, help='Input file')
@@ -56,17 +58,13 @@ def main():
     print("Reading intcode program from: {}".format(args.infile[0]))
 
     with open(args.infile[0], 'r') as f:
-        prog = [ int(i) for i in f.read().strip().split(',')]
+        refprog = [ int(i) for i in f.read().strip().split(',')]
 
-    print("prog = {}".format(prog))
-
+    prog = refprog[:]
 
     for verb in range(100):
         for noun in range(100):
-            # reset prog
-            with open(args.infile[0], 'r') as f:
-                prog = [ int(i) for i in f.read().strip().split(',')]
-
+            prog = refprog[:]
             prog[1] = noun
             prog[2] = verb
             if compute() == 0:
