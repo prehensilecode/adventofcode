@@ -48,9 +48,6 @@ def corners(wire):
 
 
 def intersections(wire_corners):
-    print(wire_corners[0])
-    print(wire_corners[1])
-
     x = []
 
     # this is an N^2 search?
@@ -81,13 +78,9 @@ def main():
 
     wires = read_inputs(args.infile[0])
 
-    print(wires)
-
     wire_corners = [corners(w) for w in wires]
 
     x = intersections(wire_corners)
-
-    print("x = {}".format(x))
 
     dists = [ sum(y) for y in [ map(abs, junc) for junc in x ] ]
 
