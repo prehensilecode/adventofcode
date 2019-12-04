@@ -37,10 +37,12 @@ def parse_path(p):
 def corners(wire):
     # return list of corners in given wire
     # start with coord (0,0)
-    corners = [(0,0)]
+    corners = [[0,0]]
 
     for p in wire:
-        corners.append(parse_path(p))
+        delta = parse_path(p)
+        c = [ corners[-1][i] + delta[i] for i in range(2) ]
+        corners.append(c)
 
     return corners
 
