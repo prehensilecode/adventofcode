@@ -89,10 +89,7 @@ def main():
 
     print("x = {}".format(x))
 
-    dists = []
-    for i in x:
-        absi = [ abs(m) for m in i ]
-        dists.append(sum(absi))
+    dists = [ sum(y) for y in [ map(abs, junc) for junc in x ] ]
 
     print("min. dist. = {}".format(min(dists)))
 
