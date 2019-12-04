@@ -89,7 +89,11 @@ def main():
 
     print("x = {}".format(x))
 
-    dists = [sum(i) for i in x]
+    dists = []
+    for i in x:
+        absi = [ abs(m) for m in i ]
+        dists.append(sum(absi))
+
     print("min. dist. = {}".format(min(dists)))
 
 if __name__ == '__main__':

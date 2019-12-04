@@ -1,1 +1,2 @@
 Given example 1 has incorrect answer?
+   No. My distance function did not take abs()
