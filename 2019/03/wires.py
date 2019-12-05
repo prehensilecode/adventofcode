@@ -69,6 +69,30 @@ def intersections(wire_corners):
     return x
 
 
+def intersections_with_steps(wire_corners):
+    x = []
+
+    ### append (x, y, steps0, steps1)
+    ### steps0 = steps for wire 0
+    ### steps1 = steps for wire 1
+
+    # this is an N^2 search?
+    for i in range(len(wire_corners[0]) - 1):
+        for j in range(len(wire_corners[1]) - 1):
+            # wire[0] horizontal, wire[1] vertical
+            if (wire_corners[0][i][1] == wire_corners[0][i+1][1]) and (wire_corners[1][j][0] == wire_corners[1][j+1][0]):
+                if ( (wire_corners[0][i+1][1] > wire_corners[1][j][1]) and (wire_corners[0][i+1][1] < wire_corners[1][j+1][1]) ) or ( (wire_corners[0][i+1][1] > wire_corners[1][j+1][1]) and (wire_corners[0][i+1][1] < wire_corners[1][j][1]) ):
+                    if ((wire_corners[0][i][0] < wire_corners[1][j+1][0]) and (wire_corners[0][i+1][0] > wire_corners[1][j+1][0])) or ((wire_corners[0][i+1][0] < wire_corners[1][j+1][0]) and (wire_corners[0][i][0] > wire_corners[1][j+1][0])):
+                        x.append([wire_corners[1][j][0], wire_corners[0][i][1], wire_corners[0][i][0] + wire_corners[1][j][0], wire_corners[1][j][1] + wire_corners[0][i][1]])
+            # wire[0] vertical, wire[1] horizontal
+            elif (wire_corners[0][i][0] == wire_corners[0][i+1][0]) and (wire_corners[1][j][1] == wire_corners[1][j+1][1]):
+                if ( (wire_corners[1][j+1][1] > wire_corners[0][i][1]) and (wire_corners[1][j+1][1] < wire_corners[0][i+1][1]) ) or ( (wire_corners[1][j+1][1] > wire_corners[0][i+1][1]) and (wire_corners[1][j+1][1] < wire_corners[0][i][1]) ):
+                    if ( (wire_corners[1][j][0] < wire_corners[0][i+1][0]) and (wire_corners[1][j+1][0] > wire_corners[0][i+1][0]) ) or ( (wire_corners[1][j+1][0] < wire_corners[0][i+1][0]) and (wire_corners[1][j][0] > wire_corners[0][i+1][0]) ):
+                        x.append([wire_corners[0][i][0], wire_corners[1][j][1], wire_corners[0][i][1] + wire_corners[1][j][1], wire_corners[1][j][0] + wire_corners[0][i][0]])
+            else:
+                continue
+
+    return x
 
 def main():
     parser = argparse.ArgumentParser("AoC 2.1")
@@ -80,11 +104,13 @@ def main():
 
     wire_corners = [corners(w) for w in wires]
 
-    x = intersections(wire_corners)
+    # x = intersections(wire_corners)
+    # dists = [ sum(y) for y in [ map(abs, junc) for junc in x ] ]
+    # print("min. dist. = {}".format(min(dists)))
 
-    dists = [ sum(y) for y in [ map(abs, junc) for junc in x ] ]
+    x = intersections_with_steps(wire_corners)
 
-    print("min. dist. = {}".format(min(dists)))
+    print(x)
 
 if __name__ == '__main__':
     main()
