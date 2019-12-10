@@ -95,7 +95,7 @@ def intersections_with_steps(wire_corners):
     return x
 
 def main():
-    parser = argparse.ArgumentParser("AoC 2.1")
+    parser = argparse.ArgumentParser("AoC 3")
     parser.add_argument('infile', metavar='infile', type=str, nargs=1, help='Input file')
 
     args = parser.parse_args()
