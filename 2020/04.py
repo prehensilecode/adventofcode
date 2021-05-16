@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+import re
 
 '''
 byr (Birth Year)
@@ -22,6 +23,40 @@ def valid_passport(passport):
     for f in req_fields:
         valid_p = valid_p and (f in passport)
     return valid_p
+
+# byr: 4 digit, [1920, 2002]
+# iyr: 4 digit, [2010, 2020]
+# eyr: 4 digit, [2020, 2030]
+def valid_yr(yr, min, max):
+    return (len(yr) == 4) and (int(yr) >= min) and (int(yr) <= max)
+
+def valid_hgt(hgt):
+    valid_p = None
+    height, unit = int(hgt[:-2]), hgt[-2:]
+    if unit == 'cm':
+        valid_p = (height >= 150) and (height <= 193)
+    elif unit == 'in':
+        valid_p = (height >= 59) and (height <= 76)
+
+    return valid_p
+
+def valid_hcl(hcl):
+    hex_pat = re.compile(r'([0-9a-fA-F]{6})')
+    print('FOOBAR HAIR: ', re.match(hex_pat, hcl[1:]))
+    return (hcl[0] == '#') and (re.match(hex_pat, hcl[1:]))
+
+def valid_ecl(ecl):
+    return ecl in set(['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'])
+
+def valid_pid(pid):
+    return re.match(r'\d{9}', pid)
+
+def strict_valid_passport(p):
+    if valid_passport(p):
+        return valid_yr(p['byr'], 1920, 2002) and valid_yr(p['iyr'], 2010, 2020) and valid_yr(p['eyr'], 2020, 2030) and valid_hgt(p['hgt']) and valid_hcl(p['hcl']) and valid_ecl(p['ecl']) and valid_pid(p['pid'])
+    else:
+        return False
+
 
 def parse_pp(lines):
     pp = {}
@@ -66,3 +101,14 @@ for p in passports:
         print('INVALID', p)
 
 print(f'{n_valid} valid passports')
+print('')
+
+n_valid = 0
+for p in passports:
+    if strict_valid_passport(p):
+        print('VALID', p)
+        n_valid += 1
+    else:
+        print('INVALID', p)
+
+print(f'{n_valid} strictly valid passports')
