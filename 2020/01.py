@@ -2,16 +2,20 @@
 import sys
 import os
 
-n1 = []
+numbers = []
 with open('input', 'r') as f:
     for l in f:
-        n1.append(int(l.strip()))
-
-n2 = n1
+        numbers.append(int(l.strip()))
 
 count = 0
-for count in range(len(n1)):
-    for m in n2[count+1:]:
-        if n1[count] + m == 2020:
-            print(n1[count] * m)
+for count in range(len(numbers)):
+    for m in numbers[count+1:]:
+        if numbers[count] + m == 2020:
+            print(numbers[count] * m)
 
+count = 0
+for count in range(len(numbers)):
+    for m in numbers[count+1:]:
+        for n in numbers[count+2:]:
+            if numbers[count] + m + n == 2020:
+                print(numbers[count] * m * n)
