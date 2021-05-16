@@ -3,7 +3,7 @@ import sys
 import os
 
 numbers = []
-with open('input', 'r') as f:
+with open('input01', 'r') as f:
     for l in f:
         numbers.append(int(l.strip()))
 
