@@ -43,7 +43,7 @@ def valid_hgt(hgt):
     return valid_p
 
 def valid_hcl(hcl):
-    hex_pat = re.compile(r'([0-9a-fA-F]{6})')
+    hex_pat = re.compile(r'([0-9a-fA-F]{6})$')
     print('FOOBAR HAIR: ', re.match(hex_pat, hcl[1:]))
     return (hcl[0] == '#') and (re.match(hex_pat, hcl[1:]))
 
@@ -53,7 +53,7 @@ def valid_ecl(ecl):
 
 def valid_pid(pid):
     print('FOOBAR PID:', pid)
-    return re.match(r'(\d{9})', pid)
+    return re.match(r'(\d{9})$', pid)
 
 def strict_valid_passport(p):
     if valid_passport(p):
