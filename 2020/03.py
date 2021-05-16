@@ -23,7 +23,6 @@ pos = [0, 0]
 num_trees = 0
 for rowcount in range(height-1):
     new_pos = vecsum(pos, directions)
-    #print('FOO', pos, new_pos)
     if map[new_pos[1]][new_pos[0]] == '#':
         num_trees += 1
 
@@ -31,3 +30,24 @@ for rowcount in range(height-1):
 
 print('Num. trees = {}'.format(num_trees))
 
+print('- - - - - - - - - -')
+
+dirs = ([1, 1], [3, 1], [5, 1], [7, 1], [1, 2])
+pos = [0, 0]
+num_trees = 0
+product = 1
+for dir in dirs:
+    print(dir)
+    for rowcount in range(height-1):
+        new_pos = vecsum(pos, dir)
+        if new_pos[1] < height and map[new_pos[1]][new_pos[0]] == '#':
+            num_trees += 1
+
+        pos = new_pos.copy()
+    print('Num. trees = {}'.format(num_trees))
+    product *= num_trees
+    num_trees = 0
+    pos = [0, 0]
+
+print('Prod. of num. trees = {}'.format(product))
+    
