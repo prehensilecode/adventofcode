@@ -13,10 +13,15 @@ pid (Passport ID)
 cid (Country ID)
 '''
 
-# valid passport requires all 8 fields
+# valid passport requires all byr, iyr, eyr, hgt, hcl, ecl, pid, cid.
+# cid is OPTIONAL
 
 def valid_passport(passport):
-    return False
+    req_fields = set(('byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'))
+    valid_p = True
+    for f in req_fields:
+        valid_p = valid_p and (f in passport)
+    return valid_p
 
 def parse_pp(lines):
     pp = {}
@@ -38,7 +43,6 @@ def read_passports(filename):
                 #print('p = ', f'{p}')
                 passports.append(p.copy())
                 p = {}
-                continue
             else:
                 #print(line.strip())
                 data_line = line.strip().split(' ')
@@ -52,6 +56,13 @@ def read_passports(filename):
 passports = read_passports('input04')
 
 print('Read {} passports'.format(len(passports)))
+n_valid = 0
 for p in passports:
-    print(p)
+    #print(p)
+    if valid_passport(p):
+        print('VALID', p)
+        n_valid += 1
+    else:
+        print('INVALID', p)
 
+print(f'{n_valid} valid passports')
