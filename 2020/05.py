@@ -53,3 +53,11 @@ for bp in boarding_passes:
 
 print('max. seat ID =', max(seat_ids))
 
+all_seats = [i for i in range(8, 1016)]
+print('len(all_seats) =', len(all_seats))
+
+missing_seats = [i if i not in seat_ids else None for i in all_seats]
+for i in missing_seats:
+    if i and (i-1) in seat_ids and (i+1) in seat_ids:
+        print(i)
+
