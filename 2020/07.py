@@ -149,11 +149,6 @@ if __name__ == '__main__':
     print('Textures:', len(textures), textures)
     print('')
 
-    bags = setup_bags()
-    print(len(bags))
-    #for b in bags:
-    #    print(b)
-
     # test Bag class
     if debug_p:
         light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'))
@@ -165,4 +160,26 @@ if __name__ == '__main__':
         print(foo_bag is dotted_red_bag)
         print(bar_bag is dotted_red_bag)
 
+    bags = setup_bags()
+    print(len(bags))
+    num_shiny_gold_containers = 0
+    shiny_gold_bag = Bag(texture=Texture('shiny'), color=Color('gold'))
+    for b in bags:
+        if b.contains:
+            for b1 in b.contains:
+                if b1[0] == shiny_gold_bag:
+                    num_shiny_gold_containers += 1
 
+                for b2 in b1[0].contains:
+                    if b2[0] == shiny_gold_bag:
+                        num_shiny_gold_containers += 1
+
+                    for b3 in b2[0].contains:
+                        if b3[0] == shiny_gold_bag:
+                            num_shiny_gold_containers += 1
+
+                        for b4 in b3[0].contains:
+                            if b4[0] == shiny_gold_bag:
+                                num_shiny_gold_containers += 1
+
+    print(f'num_shiny_gold_containers = {num_shiny_gold_containers}')
