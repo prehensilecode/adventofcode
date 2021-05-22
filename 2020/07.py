@@ -29,7 +29,7 @@ class Bag:
         return hash((self.color, self.texture))
 
     def __repr__(self):
-        return f'Bag(color={self.color}, contains={self.contains})'
+        return f'Bag(texture={self.texture}, color={self.color}, contains={self.contains})'
 
 def get_colors():
     global rules
@@ -95,9 +95,10 @@ def setup_bags():
     global rules
     bags = set()
     for r in rules:
-        print(r)
-        pass
+        rule = r.split()
+        bags.add(Bag(texture=Texture(rule[0]), color=Color(rule[1])))
 
+    return bags
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Advent of Code 2020 #7')
@@ -115,3 +116,4 @@ if __name__ == '__main__':
     print('')
 
     bags = setup_bags()
+    print(bags)
