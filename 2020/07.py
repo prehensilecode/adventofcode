@@ -22,7 +22,7 @@ class Bag:
     def __init__(self, color : Color, texture : Texture):
         self.color = color
         self.texture = texture
-        self.contains = {}
+        self.contains = set()
 
     # XXX
     def __hash__(self):
@@ -30,6 +30,9 @@ class Bag:
 
     def __repr__(self):
         return f'Bag(texture={self.texture}, color={self.color}, contains={self.contains})'
+
+    def __eq__(self, other):
+        return self.__hash__() == other.__hash__()
 
 def get_colors():
     global rules
@@ -96,7 +99,36 @@ def setup_bags():
     bags = set()
     for r in rules:
         rule = r.split()
-        bags.add(Bag(texture=Texture(rule[0]), color=Color(rule[1])))
+        print(len(rule), rule)
+        this_bag = Bag(texture=Texture(rule[0]), color=Color(rule[1]))
+        if len(rule) == 7:
+            continue
+
+        if len(rule) >= 8:
+            b2 = Bag(texture=Texture(rule[5]), color=Color(rule[6]))
+            if not b2 in bags:
+                bags.add(b2)
+            this_bag.contains.add((b2, int(rule[4])))
+
+        if len(rule) >= 12:
+            b3 = Bag(texture=Texture(rule[9]), color=Color(rule[10]))
+            if not b3 in bags:
+                bags.add(b3)
+            this_bag.contains.add((b3, int(rule[8])))
+
+        if len(rule) >= 16:
+            b4 = Bag(texture=Texture(rule[13]), color=Color(rule[14]))
+            if not b4 in bags:
+                bags.add(b4)
+            this_bag.contains.add((b4, int(rule[12])))
+
+        if len(rule) >= 20:
+            b5 = Bag(texture=Texture(rule[17]), color=Color(rule[18]))
+            if not b5 in bags:
+                bags.add(b5)
+            this_bag.contains.add((b5, int(rule[16])))
+
+        bags.add(this_bag)
 
     return bags
 
@@ -116,4 +148,12 @@ if __name__ == '__main__':
     print('')
 
     bags = setup_bags()
-    print(bags)
+    print(len(bags))
+    #for b in bags:
+    #    print(b)
+
+    light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'))
+    dotted_red_bag = Bag(texture=Texture('dotted'), color=Color('red'))
+    foo_bag = Bag(texture=Texture('dotted'), color=Color('red'))
+    print(light_brown_bag == dotted_red_bag)
+    print(foo_bag == dotted_red_bag)
