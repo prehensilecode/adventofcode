@@ -2,6 +2,7 @@
 import sys
 import os
 import itertools
+import argparse
 from dataclasses import dataclass, field
 
 color_names = set()
@@ -99,7 +100,11 @@ def setup_bags():
 
 
 if __name__ == '__main__':
-    rules = read_rules('input07')
+    parser = argparse.ArgumentParser(description='Advent of Code 2020 #7')
+    parser.add_argument('rulefile', nargs='?', type=str, default='input07')
+    args = parser.parse_args()
+
+    rules = read_rules(args.rulefile)
 
     colors = get_colors()
     print('Colors:', len(colors), colors)
