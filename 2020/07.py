@@ -10,6 +10,8 @@ colors = set()
 texture_names = set()
 textures = set()
 
+debug_p = True
+
 @dataclass(frozen=True)
 class Color:
     name : str
@@ -152,8 +154,15 @@ if __name__ == '__main__':
     #for b in bags:
     #    print(b)
 
-    light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'))
-    dotted_red_bag = Bag(texture=Texture('dotted'), color=Color('red'))
-    foo_bag = Bag(texture=Texture('dotted'), color=Color('red'))
-    print(light_brown_bag == dotted_red_bag)
-    print(foo_bag == dotted_red_bag)
+    # test Bag class
+    if debug_p:
+        light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'))
+        dotted_red_bag = Bag(texture=Texture('dotted'), color=Color('red'))
+        foo_bag = Bag(texture=Texture('dotted'), color=Color('red'))
+        bar_bag = dotted_red_bag
+        print(light_brown_bag == dotted_red_bag)
+        print(foo_bag == dotted_red_bag)
+        print(foo_bag is dotted_red_bag)
+        print(bar_bag is dotted_red_bag)
+
+
