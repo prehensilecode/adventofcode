@@ -23,6 +23,10 @@ class Bag:
         self.texture = texture
         self.contains = {}
 
+    # XXX
+    def __hash__(self):
+        return hash((self.color, self.texture))
+
     def __repr__(self):
         return f'Bag(color={self.color}, contains={self.contains})'
 
@@ -40,13 +44,13 @@ def get_colors_from_line(line):
     retval = []
     line_split = line.split()
     if len(line_split) > 7:
-        retval.append(line_split[6])
+        retval.append(Color(line_split[6]))
     if len(line_split) > 11:
-        retval.append(line_split[10])
+        retval.append(Color(line_split[10]))
     if len(line_split) > 15:
-        retval.append(line_split[14])
+        retval.append(Color(line_split[14]))
     if len(line_split) > 19:
-        retval.append(line_split[18])
+        retval.append(Color(line_split[18]))
 
     return retval
 
@@ -65,15 +69,15 @@ def get_textures_from_line(line):
     retval = []
     line_split = line.split()
     if len(line_split) > 7:
-        retval.append(line_split[0])
+        retval.append(Texture(line_split[0]))
         if line_split[4].isdigit():
-            retval.append(line_split[5])
+            retval.append(Texture(line_split[5]))
     if len(line_split) > 11:
-        retval.append(line_split[9])
+        retval.append(Texture(line_split[9]))
     if len(line_split) > 15:
-        retval.append(line_split[13])
+        retval.append(Texture(line_split[13]))
     if len(line_split) > 19:
-        retval.append(line_split[17])
+        retval.append(Texture(line_split[17]))
 
     return retval
 
@@ -86,6 +90,14 @@ def read_rules(filename):
     return tuple(r)
 
 
+def setup_bags():
+    global rules
+    bags = set()
+    for r in rules:
+        print(r)
+        pass
+
+
 if __name__ == '__main__':
     rules = read_rules('input07')
 
@@ -95,3 +107,6 @@ if __name__ == '__main__':
 
     textures = get_textures()
     print('Textures:', len(textures), textures)
+    print('')
+
+    bags = setup_bags()
