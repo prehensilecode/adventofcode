@@ -3,7 +3,9 @@ import sys
 import os
 import itertools
 import argparse
+import copy
 from dataclasses import dataclass, field
+from typing import Set
 
 color_names = set()
 colors = set()
@@ -18,26 +20,29 @@ class Color:
 
 @dataclass(frozen=True)
 class Texture:
-    texture : str
+    name : str
 
+@dataclass
 class Bag:
-    def __init__(self, color : Color, texture : Texture):
-        self.color = color
-        self.texture = texture
-        self.contains = set()
+    color : Color
+    texture : Texture
+    contains : Set
+
+    def desc(self):
+        return f'{self.texture.name} {self.color.name}'
 
     # XXX
     def __hash__(self):
         return hash((self.color, self.texture))
 
     def __repr__(self):
-        return f'Bag(texture={self.texture}, color={self.color}, contains={self.contains})'
+        #return f'Bag(texture={self.texture}, color={self.color}, contains={self.contains})'
+        return f'{self.desc()} bag - contains={self.contains}'
 
     def __eq__(self, other):
         return self.__hash__() == other.__hash__()
 
-def get_colors():
-    global rules
+def get_colors(rules):
     color_list = []
     for r in rules:
         these_colors = get_colors_from_line(r)
@@ -61,8 +66,7 @@ def get_colors_from_line(line):
     return retval
 
 
-def get_textures():
-    global rules
+def get_textures(rules):
     texture_list = []
     for r in rules:
         these_textures = get_textures_from_line(r)
@@ -96,90 +100,131 @@ def read_rules(filename):
     return tuple(r)
 
 
-def setup_bags():
-    global rules
+def setup_bags(rules):
+    global debug_p
+
     bags = set()
     for r in rules:
         rule = r.split()
-        print(len(rule), rule)
-        this_bag = Bag(texture=Texture(rule[0]), color=Color(rule[1]))
+
+        if debug_p:
+            print('DEBUG:', len(rule), rule)
+
+        this_bag = Bag(texture=Texture(rule[0]), color=Color(rule[1]), contains=set())
         if len(rule) == 7:
             continue
 
         if len(rule) >= 8:
-            b2 = Bag(texture=Texture(rule[5]), color=Color(rule[6]))
+            b2 = Bag(texture=Texture(rule[5]), color=Color(rule[6]), contains=set())
             if not b2 in bags:
                 bags.add(b2)
-            this_bag.contains.add((b2, int(rule[4])))
+            this_bag.contains.add((copy.copy(b2), int(rule[4])))
 
         if len(rule) >= 12:
-            b3 = Bag(texture=Texture(rule[9]), color=Color(rule[10]))
+            b3 = Bag(texture=Texture(rule[9]), color=Color(rule[10]), contains=set())
             if not b3 in bags:
                 bags.add(b3)
-            this_bag.contains.add((b3, int(rule[8])))
+            this_bag.contains.add((copy.copy(b3), int(rule[8])))
+            if debug_p:
+                print(f'DEBUG: len(rule) >= 12 - this_bag = {this_bag}')
 
         if len(rule) >= 16:
-            b4 = Bag(texture=Texture(rule[13]), color=Color(rule[14]))
+            b4 = Bag(texture=Texture(rule[13]), color=Color(rule[14]), contains=set())
             if not b4 in bags:
                 bags.add(b4)
-            this_bag.contains.add((b4, int(rule[12])))
+            this_bag.contains.add((copy.copy(b4), int(rule[12])))
 
         if len(rule) >= 20:
-            b5 = Bag(texture=Texture(rule[17]), color=Color(rule[18]))
+            b5 = Bag(texture=Texture(rule[17]), color=Color(rule[18]), contains=set())
             if not b5 in bags:
                 bags.add(b5)
-            this_bag.contains.add((b5, int(rule[16])))
+            this_bag.contains.add((copy.copy(b5), int(rule[16])))
 
+        if debug_p:
+            print(f'DEBUG setup_bags() - this_bag = {this_bag}')
         bags.add(this_bag)
+
+    for b in bags:
+        print('DEBUG setup_bags() - for b in bags:', b)
 
     return bags
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Advent of Code 2020 #7')
-    parser.add_argument('rulefile', nargs='?', type=str, default='input07')
-    args = parser.parse_args()
+def main(rulefile):
+    global debug_p
 
     rules = read_rules(args.rulefile)
 
-    colors = get_colors()
-    print('Colors:', len(colors), colors)
-    print('')
+    if debug_p:
+        print('DEBUG: main() - rules:')
+        for r in rules:
+            print(f'    {r}')
+        print('')
 
-    textures = get_textures()
-    print('Textures:', len(textures), textures)
-    print('')
+    colors = get_colors(rules)
+    if debug_p:
+        print(f'DEBUG: {len(colors)} Colors:')
+        for c in colors:
+            print(f'    {c}')
+        print('')
+
+    textures = get_textures(rules)
+    if debug_p:
+        print(f'DEBUG: {len(textures)} Textures:')
+        for t in textures:
+            print(f'    {t}')
+        print('')
 
     # test Bag class
     if debug_p:
-        light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'))
-        dotted_red_bag = Bag(texture=Texture('dotted'), color=Color('red'))
-        foo_bag = Bag(texture=Texture('dotted'), color=Color('red'))
+        light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'), contains=set())
+        dotted_red_bag = Bag(texture=Texture('dotted'), color=Color('red'), contains=set())
+        foo_bag = Bag(texture=Texture('dotted'), color=Color('red'), contains=set())
         bar_bag = dotted_red_bag
         print(light_brown_bag == dotted_red_bag)
         print(foo_bag == dotted_red_bag)
         print(foo_bag is dotted_red_bag)
         print(bar_bag is dotted_red_bag)
 
-    bags = setup_bags()
-    print(len(bags))
-    num_shiny_gold_containers = 0
-    shiny_gold_bag = Bag(texture=Texture('shiny'), color=Color('gold'))
+    bags = setup_bags(rules)
+    print(f'Num. of distinct bags = {len(bags)}')
     for b in bags:
+        print(b)
+    print('')
+
+    num_shiny_gold_containers = 0
+    #shiny_gold_bag = Bag(texture=Texture('shiny'), color=Color('gold'))
+    shiny_gold = 'shiny gold'
+    for b in bags:
+        print(f'FOOBAR: {b}')
         if b.contains:
+            print(f'Non-empty contains: {b}')
             for b1 in b.contains:
-                if b1[0] == shiny_gold_bag:
+                if b1[0].desc() == shiny_gold:
+                    print(b1[0].desc())
                     num_shiny_gold_containers += 1
 
                 for b2 in b1[0].contains:
-                    if b2[0] == shiny_gold_bag:
-                        num_shiny_gold_containers += 1
+                    if b2[0].desc() == shiny_gold:
+                        print(b2[0].desc())
+                        num_shiny_gold_containers += 2
 
                     for b3 in b2[0].contains:
-                        if b3[0] == shiny_gold_bag:
-                            num_shiny_gold_containers += 1
+                        if b3[0].desc() == shiny_gold:
+                            print(b3[0].desc())
+                            num_shiny_gold_containers += 3
 
                         for b4 in b3[0].contains:
-                            if b4[0] == shiny_gold_bag:
-                                num_shiny_gold_containers += 1
+                            if b4[0].desc() == shiny_gold:
+                                print(b4[0].desc())
+                                num_shiny_gold_containers += 4
 
     print(f'num_shiny_gold_containers = {num_shiny_gold_containers}')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Advent of Code 2020 #7')
+    parser.add_argument('rulefile', nargs='?', type=str, default='input07')
+    args = parser.parse_args()
+
+    main(args.rulefile)
+
