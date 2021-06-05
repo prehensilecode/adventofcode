@@ -186,10 +186,11 @@ def main(rulefile):
         print(bar_bag is dotted_red_bag)
 
     bags = setup_bags(rules)
-    print(f'Num. of distinct bags = {len(bags)}')
-    for b in bags:
-        print(b)
-    print('')
+    if debug_p:
+        print(f'DEBUG: {len(bags)} Bags:')
+        for b in bags:
+            print(f'    {b}')
+        print('')
 
     num_shiny_gold_containers = 0
     #shiny_gold_bag = Bag(texture=Texture('shiny'), color=Color('gold'))
