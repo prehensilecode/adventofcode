@@ -14,19 +14,22 @@ textures = set()
 
 debug_p = True
 
+
 @dataclass(frozen=True)
 class Color:
-    name : str
+    name: str
+
 
 @dataclass(frozen=True)
 class Texture:
-    name : str
+    name: str
 
-@dataclass
+
 class Bag:
-    color : Color
-    texture : Texture
-    contains : Set
+    def __init__(self, color: Color, texture: Texture):
+        self.color = color
+        self.texture = texture
+        self.contains = set()
 
     def desc(self):
         return f'{self.texture.name} {self.color.name}'
