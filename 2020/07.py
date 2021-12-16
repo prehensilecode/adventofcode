@@ -45,6 +45,7 @@ class Bag:
     def __eq__(self, other):
         return self.__hash__() == other.__hash__()
 
+
 def get_colors(rules):
     color_list = []
     for r in rules:
@@ -53,6 +54,7 @@ def get_colors(rules):
             color_list.append(c)
 
     return set(color_list)
+
 
 def get_colors_from_line(line):
     retval = []
@@ -78,6 +80,7 @@ def get_textures(rules):
 
     return set(texture_list)
 
+
 def get_textures_from_line(line):
     retval = []
     line_split = line.split()
@@ -94,6 +97,7 @@ def get_textures_from_line(line):
 
     return retval
 
+
 def read_rules(filename):
     r = []
     with open(filename, 'r') as f:
@@ -109,48 +113,54 @@ def setup_bags(rules):
     bags = set()
     for r in rules:
         rule = r.split()
-
         if debug_p:
-            print('DEBUG:', len(rule), rule)
+            print(f'DEBUG: setup_bags() - working on rule: {r}')
+            print(f'DEBUG: setup_bags() - len(rule) = {len(rule)}')
 
-        this_bag = Bag(texture=Texture(rule[0]), color=Color(rule[1]), contains=set())
+        this_bag = Bag(texture=Texture(rule[0]), color=Color(rule[1]))
+
         if len(rule) == 7:
             continue
 
         if len(rule) >= 8:
-            b2 = Bag(texture=Texture(rule[5]), color=Color(rule[6]), contains=set())
-            if not b2 in bags:
+            b2 = Bag(texture=Texture(rule[5]), color=Color(rule[6]))
+            if b2 not in bags:
                 bags.add(b2)
-            this_bag.contains.add((copy.copy(b2), int(rule[4])))
+            this_bag.contains.add((b2, int(rule[4])))
 
         if len(rule) >= 12:
-            b3 = Bag(texture=Texture(rule[9]), color=Color(rule[10]), contains=set())
-            if not b3 in bags:
+            b3 = Bag(texture=Texture(rule[9]), color=Color(rule[10]))
+            if b3 not in bags:
                 bags.add(b3)
-            this_bag.contains.add((copy.copy(b3), int(rule[8])))
-            if debug_p:
-                print(f'DEBUG: len(rule) >= 12 - this_bag = {this_bag}')
+            this_bag.contains.add((b3, int(rule[8])))
 
         if len(rule) >= 16:
-            b4 = Bag(texture=Texture(rule[13]), color=Color(rule[14]), contains=set())
-            if not b4 in bags:
+            b4 = Bag(texture=Texture(rule[13]), color=Color(rule[14]))
+            if b4 not in bags:
                 bags.add(b4)
-            this_bag.contains.add((copy.copy(b4), int(rule[12])))
+            this_bag.contains.add((b4, int(rule[12])))
 
         if len(rule) >= 20:
-            b5 = Bag(texture=Texture(rule[17]), color=Color(rule[18]), contains=set())
-            if not b5 in bags:
+            b5 = Bag(texture=Texture(rule[17]), color=Color(rule[18]))
+            if b5 not in bags:
                 bags.add(b5)
-            this_bag.contains.add((copy.copy(b5), int(rule[16])))
+            this_bag.contains.add((b5, int(rule[16])))
 
-        if debug_p:
-            print(f'DEBUG setup_bags() - this_bag = {this_bag}')
         bags.add(this_bag)
 
-    for b in bags:
-        print('DEBUG setup_bags() - for b in bags:', b)
+        if debug_p:
+            print(f'DEBUG: setup_bags() - this_bag = {this_bag}; id(this_bag) = {id(this_bag)}')
+            print(f'DEBUG: setup_bags() - this_bag in set bags = {this_bag in bags}')
+            print('')
+
+    if debug_p:
+        print(f'DEBUG: setup_bags() - id(bags) = {id(bags)}')
+        print('DEBUG: setup_bags() - all bags:')
+        for b in bags:
+            print(f'    {b}, id(b) = {id(b)}')
 
     return bags
+
 
 def main(rulefile):
     global debug_p
@@ -179,9 +189,9 @@ def main(rulefile):
 
     # test Bag class
     if debug_p:
-        light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'), contains=set())
-        dotted_red_bag = Bag(texture=Texture('dotted'), color=Color('red'), contains=set())
-        foo_bag = Bag(texture=Texture('dotted'), color=Color('red'), contains=set())
+        light_brown_bag = Bag(texture=Texture('light'), color=Color('brown'))
+        dotted_red_bag = Bag(texture=Texture('dotted'), color=Color('red'))
+        foo_bag = Bag(texture=Texture('dotted'), color=Color('red'))
         bar_bag = dotted_red_bag
         print(light_brown_bag == dotted_red_bag)
         print(foo_bag == dotted_red_bag)
@@ -190,13 +200,12 @@ def main(rulefile):
 
     bags = setup_bags(rules)
     if debug_p:
-        print(f'DEBUG: {len(bags)} Bags:')
+        print(f'DEBUG: main() - {len(bags)} Bags:')
         for b in bags:
             print(f'    {b}')
         print('')
 
     num_shiny_gold_containers = 0
-    #shiny_gold_bag = Bag(texture=Texture('shiny'), color=Color('gold'))
     shiny_gold = 'shiny gold'
     for b in bags:
         print(f'FOOBAR: {b}')
