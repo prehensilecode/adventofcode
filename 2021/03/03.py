@@ -139,6 +139,10 @@ def co2(data):
     return int(kept[0])
 
 
+def life_support(data):
+    return og(data) * co2(data)
+
+
 loglines = []
 with open('input1.txt', 'r') as f:
     for line in f:
@@ -156,8 +160,11 @@ g, e = dg(data)
 print(f'g, e = {g}, {e}')
 print(f'Power = {g *  e}')
 
-og = og(data)
-print(f'Oxygen generator rating = {og}')
+ogr = og(data)
+print(f'Oxygen generator rating = {ogr}')
 
-co2 = co2(data)
-print(f'CO2 scrubber rating = {co2}')
+co2r = co2(data)
+print(f'CO2 scrubber rating = {co2r}')
+
+ls = life_support(data)
+print(f'Life support rating = {ls}')
