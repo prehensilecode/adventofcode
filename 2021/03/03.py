@@ -81,9 +81,12 @@ def og(data):
                     kept.append(line)
             print(f'{[str(x) for x in kept]}')
         else:
-            mcb = most_common_bits(kept)
-            kept[:] = [x for x in kept if x[n] == mcb[n]]
-            print(f'{[str(x) for x in kept]}')
+            if len(kept) == 1:
+                break
+            else:
+                mcb = most_common_bits(kept)
+                kept[:] = [x for x in kept if x[n] == mcb[n]]
+                print(f'{[str(x) for x in kept]}')
 
     if len(kept) != 1:
         print(f'ERROR: len(kept) = {len(kept)}')
@@ -94,8 +97,31 @@ def og(data):
     return int(kept[0])
 
 
-def o2(data):
-    return None
+def co2(data):
+    npos = len(data[0])
+    kept = []
+    for n in range(npos):
+        if n == 0:
+            mcb = most_common_bits(data)
+            for line in data:
+                if line[n] != mcb[n]:
+                    kept.append(line)
+            print(f'{[str(x) for x in kept]}')
+        else:
+            if len(kept) == 1:
+                break
+            else:
+                mcb = most_common_bits(kept)
+                kept[:] = [x for x in kept if x[n] != mcb[n]]
+                print(f'{[str(x) for x in kept]}')
+
+    if len(kept) != 1:
+        print(f'ERROR: len(kept) = {len(kept)}')
+        sys.exit(1)
+
+    print(f'DEBUG: kept[0] = {kept[0]}')
+
+    return int(kept[0])
 
 
 loglines = []
@@ -117,3 +143,6 @@ print(f'Power = {g *  e}')
 
 og = og(data)
 print(og)
+
+co2 = co2(data)
+print(co2)
