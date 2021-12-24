@@ -157,7 +157,7 @@ print(f'g, e = {g}, {e}')
 print(f'Power = {g *  e}')
 
 og = og(data)
-print(og)
+print(f'Oxygen generator rating = {og}')
 
 co2 = co2(data)
-print(co2)
+print(f'CO2 scrubber rating = {co2}')
