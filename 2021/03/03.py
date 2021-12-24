@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 from BitVector import BitVector
 
 def gamma_epsilon(loglines):
@@ -27,13 +28,17 @@ def gamma_epsilon(loglines):
     return int(''.join(gamma_bin), 2), int(''.join(epsilon_bin), 2)
 
 
-def dg(loglines):
+def logdata(loglines):
     data = []
     for line in loglines:
         data.append(BitVector(bitstring=line.strip()))
 
+    return data
+
+
+def dg(data):
     nlines = len(data)
-    npos = len(loglines[0])
+    npos = len(data[0])
 
     # list of 0th elems
     res = []
@@ -49,18 +54,66 @@ def dg(loglines):
     return gamma_bin.int_val(), epsilon_bin.int_val()
 
 
+def most_common_bits(lines):
+    nlines = len(lines)
+    npos = len(lines[0])
+    retval = []
+    for n in range(npos):
+        nths = [int(el[n]) for el in lines]
+        if sum(nths) < nlines/2.:
+            retval.append(0)
+        else:
+            retval.append(1)
+
+    return BitVector(bitlist=retval)
+
+
+def og(data):
+    # determine most common value in current bit position;
+    # keep only numbers with that bit in that position
+    npos = len(data[0])
+    kept = []
+    for n in range(npos):
+        if n == 0:
+            mcb = most_common_bits(data)
+            for line in data:
+                if line[n] == mcb[n]:
+                    kept.append(line)
+            print(f'{[str(x) for x in kept]}')
+        else:
+            mcb = most_common_bits(kept)
+            kept[:] = [x for x in kept if x[n] == mcb[n]]
+            print(f'{[str(x) for x in kept]}')
+
+    if len(kept) != 1:
+        print(f'ERROR: len(kept) = {len(kept)}')
+        sys.exit(1)
+
+    print(f'DEBUG: kept[0] = {kept[0]}')
+
+    return int(kept[0])
+
+
+def o2(data):
+    return None
+
+
 loglines = []
 with open('test1.txt', 'r') as f:
-    for l in f:
-        loglines.append(l.strip())
+    for line in f:
+        loglines.append(line.strip())
 
-g, e = gamma_epsilon(loglines)
-print(f'g, e = {g}, {e}')
-power = g * e
-print(f'Power = {power}')
-print('')
+# g, e = gamma_epsilon(loglines)
+# print(f'g, e = {g}, {e}')
+# power = g * e
+# print(f'Power = {power}')
+# print('')
 
 print('Using BitVector')
-g, e = dg(loglines)
+data = logdata(loglines)
+g, e = dg(data)
 print(f'g, e = {g}, {e}')
 print(f'Power = {g *  e}')
+
+og = og(data)
+print(og)
