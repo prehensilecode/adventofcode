@@ -2,6 +2,8 @@
 import sys
 from BitVector import BitVector
 
+debug_p = False
+
 def gamma_epsilon(loglines):
     res = []
     nlines = len(loglines)
@@ -69,6 +71,7 @@ def most_common_bits(lines):
 
 
 def og(data):
+    global debug_p
     # determine most common value in current bit position;
     # keep only numbers with that bit in that position
     npos = len(data[0])
@@ -79,25 +82,32 @@ def og(data):
             for line in data:
                 if line[n] == mcb[n]:
                     kept.append(line)
-            print(f'{[str(x) for x in kept]}')
+
+            if debug_p:
+                print(f'{[str(x) for x in kept]}')
         else:
             if len(kept) == 1:
                 break
             else:
                 mcb = most_common_bits(kept)
                 kept[:] = [x for x in kept if x[n] == mcb[n]]
-                print(f'{[str(x) for x in kept]}')
+
+                if debug_p:
+                    print(f'{[str(x) for x in kept]}')
 
     if len(kept) != 1:
         print(f'ERROR: len(kept) = {len(kept)}')
         sys.exit(1)
 
-    print(f'DEBUG: kept[0] = {kept[0]}')
+    if debug_p:
+        print(f'DEBUG: kept[0] = {kept[0]}')
 
     return int(kept[0])
 
 
 def co2(data):
+    global debug_p
+
     npos = len(data[0])
     kept = []
     for n in range(npos):
@@ -106,26 +116,31 @@ def co2(data):
             for line in data:
                 if line[n] != mcb[n]:
                     kept.append(line)
-            print(f'{[str(x) for x in kept]}')
+
+            if debug_p:
+                print(f'{[str(x) for x in kept]}')
         else:
             if len(kept) == 1:
                 break
             else:
                 mcb = most_common_bits(kept)
                 kept[:] = [x for x in kept if x[n] != mcb[n]]
-                print(f'{[str(x) for x in kept]}')
+
+                if debug_p:
+                    print(f'{[str(x) for x in kept]}')
 
     if len(kept) != 1:
         print(f'ERROR: len(kept) = {len(kept)}')
         sys.exit(1)
 
-    print(f'DEBUG: kept[0] = {kept[0]}')
+    if debug_p:
+        print(f'DEBUG: kept[0] = {kept[0]}')
 
     return int(kept[0])
 
 
 loglines = []
-with open('test1.txt', 'r') as f:
+with open('input1.txt', 'r') as f:
     for line in f:
         loglines.append(line.strip())
 
