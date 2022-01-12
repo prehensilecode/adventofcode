@@ -6,6 +6,7 @@ import copy
 class Board:
     def __init__(self, data):
         self.data = copy.deepcopy(data)
+        self.marks = []
 
     def index(self, number):
         r = 0
@@ -20,8 +21,11 @@ class Board:
             r += 1
         return (row_ind, col_ind)
 
+    def mark(self, number):
+        self.marks.append(self.index(number))
+
     def __repr__(self):
-        return f'{self.data}'
+        return f'Board = {self.data}; marks = {self.marks}'
 
 
 lines = []
