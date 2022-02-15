@@ -1,3 +1,4 @@
+```mermaid
 stateDiagram
     direction LR
     [*] --> A
@@ -8,4 +9,4 @@ stateDiagram
       a --> b
     }
     B --> D
-
+```
