@@ -17,22 +17,22 @@ priorities = lower | higher
 
 #print(lower)
 #print(higher)
-print(priorities)
+#print(priorities)
 
-with open('test.txt', 'r') as infile:
+with open('input.txt', 'r') as infile:
     common_items = []
     for line in infile:
         line_length = len(line.strip())
-        print(line_length, line.strip(), line.strip()[:line_length//2], line.strip()[line_length//2:])
+        #print(line_length, line.strip(), line.strip()[:line_length//2], line.strip()[line_length//2:])
         left = set(line.strip()[:line_length//2])
         right = set(line.strip()[line_length//2:])
         intersection = left & right
-        print(intersection)
+        #print(intersection)
         if intersection:
             for i in list(intersection):
                 common_items.append(i)
 
-print(common_items)
+#print(common_items)
 prio_sum = sum([priorities[i] for i in common_items])
 print(prio_sum)
 
