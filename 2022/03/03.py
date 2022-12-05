@@ -11,6 +11,12 @@ print(f'higher_prio = {higher_prio}')
 print(f'lower_alpha = {lower_alpha}')
 print(f'higher_alpha = {higher_alpha}')
 
+lower = dict(zip(lower_alpha, lower_prio))
+higher = dict(zip(higher_alpha, higher_prio))
+
+print(lower)
+print(higher)
+
 with open('test.txt', 'r') as infile:
     for line in infile:
         line_length = len(line.strip())
