@@ -5,15 +5,19 @@ with open('input.txt', 'r') as inputfile:
     for line in inputfile:
         assignments.append([i.split('-') for i in line.strip().split(',')])
 
-overlap = 0
+assgn = []
 for a in assignments:
-    if (int(a[0][0]) <= int(a[1][0])) and (int(a[0][1]) >= int(a[1][1])):
+    assgn.append([[int(i) for i in a[0]], [int(j) for j in a[1]]])
+
+overlap = 0
+for a in assgn:
+    if (a[0][0] <= a[1][0]) and (a[0][1] >= a[1][1]):
         overlap += 1
-    elif (int(a[1][0]) <= int(a[0][0])) and (int(a[1][1]) >= int(a[0][1])):
+    elif (a[1][0] <= a[0][0]) and (a[1][1] >= a[0][1]):
         overlap += 1
-    elif (int(a[0][0]) <= int(a[1][0])) and (int(a[0][1]) >= int(a[1][0])):
+    elif (a[0][0] <= a[1][0]) and (a[0][1] >= a[1][0]):
         overlap += 1
-    elif (int(a[1][0]) <= int(a[0][0])) and (int(a[1][1]) >= int(a[0][0])):
+    elif (a[1][0] <= a[0][0]) and (a[1][1] >= a[0][0]):
         overlap += 1
 
 print(overlap)
