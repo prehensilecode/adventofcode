@@ -2,8 +2,45 @@
 import sys
 import os
 import re
+import numpy as np
  
 debug_p = False
+
+
+def make_moves(crates_by_col, moves):
+    global debug_p
+
+    if debug_p:
+        print(crates_by_col)
+        print(moves)
+
+    if debug_p:
+        print('Making moves:')
+
+    for m in moves:
+        height = len(crates_by_col[m[1]])
+        start = height - m[0]
+        crates_by_col[m[2]] += reversed(crates_by_col[m[1]][start:])
+        del crates_by_col[m[1]][start:]
+
+        if debug_p:
+            for c in crates_by_col:
+                print(c)
+            print()
+
+    if debug_p:
+        print('Done moving.')
+
+
+def parse_instruction(instr):
+    # move qty from col no. to other col no.
+    tok = instr.split()
+    qty = int(tok[1])
+    src = int(tok[3]) - 1
+    dst = int(tok[5]) - 1
+
+    return (qty, src, dst)
+
 
 def read_stack_line_re(n_stacks, stack_line_str):
     global debug_p
@@ -68,8 +105,39 @@ def main():
         row = read_stack_line_re(n_stacks, lines[i])
         crates.insert(0, row)
 
-    for row in crates:
-        print(row)
+    if debug_p:
+        for row in crates:
+            print(row)
+        print()
+
+    crates_by_col = np.array(crates).T.tolist()
+
+    for col in crates_by_col:
+        for i in reversed(range(len(col))):
+            if col[i] == '-':
+                del col[i]
+
+    if debug_p:
+        for col in crates_by_col:
+            print(col)
+        print()
+
+        print(f'lines[count] = {lines[count]}')
+        print(f'lines[count+1] = {lines[count+1]}')
+
+    moves = []
+    instructions = lines[count+1:]
+    for instr in instructions:
+        moves.append(parse_instruction(instr))
+
+    make_moves(crates_by_col, moves)
+    result = []
+    for c in crates_by_col:
+        if debug_p:
+            print(c)
+        result.append(c[-1])
+
+    print(''.join(result))
 
 
 if __name__ == '__main__':
