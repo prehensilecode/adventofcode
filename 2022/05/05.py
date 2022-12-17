@@ -3,11 +3,12 @@ import sys
 import os
 import re
 import numpy as np
+import argparse
  
 debug_p = False
 
 
-def make_moves(crates_by_col, moves):
+def make_moves(crates_by_col, moves, version=9000):
     global debug_p
 
     if debug_p:
@@ -20,7 +21,15 @@ def make_moves(crates_by_col, moves):
     for m in moves:
         height = len(crates_by_col[m[1]])
         start = height - m[0]
-        crates_by_col[m[2]] += reversed(crates_by_col[m[1]][start:])
+
+        if version == 9000:
+            crates_by_col[m[2]] += reversed(crates_by_col[m[1]][start:])
+        elif version == 9001:
+            crates_by_col[m[2]] += crates_by_col[m[1]][start:]
+        else:
+            print(f'Unknown CrateMover version {version}')
+            sys.exit(69)
+
         del crates_by_col[m[1]][start:]
 
         if debug_p:
@@ -84,6 +93,10 @@ def read_stack_line(n_stacks, stack_line_str):
 def main():
     global debug_p
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', '--version', metavar='version', type=int, default=9000, help='CrateMover version')
+    args = parser.parse_args()
+
     lines = []
     with open('input.txt', 'r') as infile:
         for line in infile:
@@ -130,7 +143,7 @@ def main():
     for instr in instructions:
         moves.append(parse_instruction(instr))
 
-    make_moves(crates_by_col, moves)
+    make_moves(crates_by_col, moves, version=args.version)
     result = []
     for c in crates_by_col:
         if debug_p:
