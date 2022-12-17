@@ -5,15 +5,15 @@ import os
 debug_p = False
 
 # start of packet marker = 4 chars all different
+# start of message marker = 14 chars all different
 
-def find_start(instr):
+def find_start(instr, markerlen):
     global debug_p
 
     if debug_p:
         print(len(instr))
         print()
 
-    markerlen = 4
     test = None
     for i in range(len(instr) - 2*markerlen):
         substr = instr[i:i+markerlen]
@@ -31,5 +31,8 @@ def find_start(instr):
 
 with open('input.txt', 'r') as infile:
     for line in infile:
-        print(f'Start = {find_start(line.strip())}')
+        print(f'Start = {find_start(line.strip(), 4)}')
 
+with open('input.txt', 'r') as infile:
+    for line in infile:
+        print(f'Start = {find_start(line.strip(), 14)}')
