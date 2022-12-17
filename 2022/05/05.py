@@ -63,8 +63,12 @@ def main():
         print(f'n_stacks = {n_stacks}')
         print(f'max. height = {height}')
 
-    for i in range(n_stacks):
+    crates = []
+    for i in range(height):
         row = read_stack_line_re(n_stacks, lines[i])
+        crates.insert(0, row)
+
+    for row in crates:
         print(row)
 
 
