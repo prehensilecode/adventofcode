@@ -9,10 +9,11 @@ class NodeType(Enum):
     FILE = 2
 
 class Node:
-    def __init__(self, name=None, nodetype=NodeType.FILE, size=0):
+    def __init__(self, name=None, nodetype=NodeType.FILE, size=0, parent=None):
         self.name = name
         self.nodetype = nodetype
         self.size = size
+        self.parent = parent
         self.children = []
 
     def __repr__(self):
@@ -28,12 +29,12 @@ class Node:
 
         return retstr
 
-    def add_child(self, name=None, nodetype=None):
+    def add_child(self, name=None, nodetype=None, size=0):
         if self.nodetype == NodeType.FILE:
             print(f'ERROR: cannot add child to {self.nodetype}')
             sys.exit(69)
         else:
-            self.children.append(Node(name, nodetype))
+            self.children.append(Node(name=name, nodetype=NodeType.DIR, size=0))
 
 
 
