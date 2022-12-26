@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
-from operator import mul
+from operator import mul, itemgetter
 
 debug_p = False
 
@@ -146,4 +146,9 @@ for y in range(size):
 #    if v > 0:
 #        print(k, v)
 
+# see https://stackoverflow.com/a/268285
+
 print(scores[max(scores, key=scores.get)])
+
+print(scores[max(scores.items(), key=itemgetter(1))[0]])
+
