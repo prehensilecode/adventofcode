@@ -5,7 +5,7 @@ import re
 from anytree import Node, NodeMixin, RenderTree, PreOrderIter
 from anytree.exporter import DotExporter
 
-debug_p = True
+debug_p = False
 
 class Directory(NodeMixin):
     def __init__(self, name, parent=None, children=None):
@@ -103,7 +103,7 @@ def dirsize(dir: Directory):
 
 
 log = []
-with open('test.txt', 'r') as infile:
+with open('input.txt', 'r') as infile:
     for line in infile:
         log.append(line.strip())
 
@@ -139,6 +139,7 @@ if debug_p:
     print(f'dirsize(/) = {dirsize(root)}')
 
 
+### Part 1
 sum = 0
 maxsize = 100000
 for node in PreOrderIter(dir_tree):
@@ -148,3 +149,37 @@ for node in PreOrderIter(dir_tree):
             sum += dsize
 
 print(f'sum = {sum}')
+
+print('- - - - -')
+
+
+### Part 2
+tot_diskspace = 70000000
+min_free = 30000000
+tot_used = dirsize(root)
+cur_free = tot_diskspace - tot_used
+to_free = min_free - cur_free
+
+candidates = {}
+rootsize = dirsize(root)
+for node in PreOrderIter(dir_tree):
+    if type(node) == Directory:
+        d = dirsize(node)
+        if d >= to_free and d < rootsize:
+            candidates[node.name] = d
+
+print('Candidates:')
+for c,s in candidates.items():
+    print(f'{c:15s} {s:12d}')
+print()
+
+select = rootsize
+dirname = root
+for c,s in candidates.items():
+    if s < select:
+        select = s
+        dirname = c
+    else:
+        continue
+
+print(dirname, select)
