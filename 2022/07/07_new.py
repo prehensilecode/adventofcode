@@ -2,7 +2,7 @@
 import sys
 import os
 import re
-from anytree import Node, NodeMixin, RenderTree, Walker
+from anytree import Node, NodeMixin, RenderTree, PreOrderIter
 from anytree.exporter import DotExporter
 
 debug_p = True
@@ -44,7 +44,6 @@ def parse_log(log):
 
 
     myvars = vars()
-    walker = Walker()
     curdir = None
     root = None
     for i in range(len(log)):
@@ -94,6 +93,15 @@ def parse_log(log):
     return root
 
 
+def dirsize(dir: Directory):
+    size = 0
+    for node in PreOrderIter(dir):
+        if type(node) == File:
+            size += node.size
+
+    return size
+
+
 log = []
 with open('test.txt', 'r') as infile:
     for line in infile:
@@ -105,3 +113,26 @@ print()
 for pre, fill, node in RenderTree(dir_tree):
     print(f'{pre}{node}')
 
+print()
+for node in PreOrderIter(dir_tree):
+    if node.name == '/':
+        name = 'root'
+    else:
+        name = node.name
+
+    vars()[name] = node
+
+print()
+print(vars())
+
+print()
+print(a)
+
+print()
+print(f'dirsize(a) = {dirsize(a)}')
+
+print()
+print(f'dirsize(d) = {dirsize(d)}')
+
+print()
+print(f'dirsize(/) = {dirsize(root)}')
