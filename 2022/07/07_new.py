@@ -14,6 +14,9 @@ class Directory(NodeMixin):
         if children:
             self.children = children
 
+    def __repr__(self):
+        return f'{self.name} (dir)'
+
 
 class File(NodeMixin):
     def __init__(self, name, size, parent=None, children=None):
@@ -24,7 +27,7 @@ class File(NodeMixin):
             self.children = children
 
     def __repr__(self):
-        return f'file "{self.name}", size={self.size}'
+        return f'{self.name} (file, size={self.size})'
 
 
 def parse_listing(line):
@@ -100,5 +103,5 @@ dir_tree = parse_log(log)
 
 print()
 for pre, fill, node in RenderTree(dir_tree):
-    print(f'{pre}{node.name}')
+    print(f'{pre}{node}')
 
