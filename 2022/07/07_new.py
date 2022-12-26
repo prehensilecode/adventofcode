@@ -109,11 +109,11 @@ with open('test.txt', 'r') as infile:
 
 dir_tree = parse_log(log)
 
-print()
-for pre, fill, node in RenderTree(dir_tree):
-    print(f'{pre}{node}')
+if debug_p:
+    print()
+    for pre, fill, node in RenderTree(dir_tree):
+        print(f'{pre}{node}')
 
-print()
 for node in PreOrderIter(dir_tree):
     if node.name == '/':
         name = 'root'
@@ -122,17 +122,29 @@ for node in PreOrderIter(dir_tree):
 
     vars()[name] = node
 
-print()
-print(vars())
+if debug_p:
+    print()
+    print(vars())
 
-print()
-print(a)
+    print()
+    print(a)
 
-print()
-print(f'dirsize(a) = {dirsize(a)}')
+    print()
+    print(f'dirsize(a) = {dirsize(a)}')
 
-print()
-print(f'dirsize(d) = {dirsize(d)}')
+    print()
+    print(f'dirsize(d) = {dirsize(d)}')
 
-print()
-print(f'dirsize(/) = {dirsize(root)}')
+    print()
+    print(f'dirsize(/) = {dirsize(root)}')
+
+
+sum = 0
+maxsize = 100000
+for node in PreOrderIter(dir_tree):
+    if type(node) == Directory:
+        dsize = dirsize(node)
+        if dsize <= maxsize:
+            sum += dsize
+
+print(f'sum = {sum}')
