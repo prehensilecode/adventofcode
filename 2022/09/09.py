@@ -31,7 +31,7 @@ class Position:
 
 def step_r(h_pos, t_pos):
     if h_pos.metric(t_pos) > 1.5:
-        print(f'ERROR: head-tail distance = {h_pos.metric(t_pos)}')
+        print(f'ERROR: step_r(): head-tail distance = {h_pos.metric(t_pos)}')
         sys.exit(5)
 
     new_h_pos = Position(h_pos.x, h_pos.y)
@@ -71,8 +71,8 @@ def move_r(h_pos, t_pos, dist):
 
 
 def step_l(h_pos, t_pos):
-    if h_pos.metric(t_pos) > 1.4:
-        print(f'ERROR: head-tail distance = {h_pos.metric(t_pos)}')
+    if h_pos.metric(t_pos) > 1.5:
+        print(f'ERROR: step_l(): head-tail distance = {h_pos.metric(t_pos)}')
         sys.exit(7)
 
     new_h_pos = Position(h_pos.x, h_pos.y)
@@ -111,12 +111,85 @@ def move_l(h_pos, t_pos, dist):
     return new_h_pos, new_t_pos
 
 
-def move_u(h_pos, t_pos, dist):
-    pass
+def step_u(h_pos, t_pos):
+    if h_pos.metric(t_pos) > 1.5:
+        print(f'ERROR: step_u(): head-tail distance = {h_pos.metric(t_pos)}')
+        sys.exit(9)
 
+    new_h_pos = Position(h_pos.x, h_pos.y)
+    new_t_pos = Position(t_pos.x, t_pos.y)
+
+    if new_h_pos.metric(new_t_pos) <= 1:
+        new_h_pos.y += 1
+
+        if not new_t_pos.touching(new_h_pos):
+            new_t_pos.y += 1
+    else:
+        new_h_pos.y += 1
+        # diagonals: UR, LR, LL, UL
+        if (h_pos.x > t_pos.x) and (h_pos.y > t_pos.y):
+            new_t_pos.x += 1
+            new_t_pos.y += 1
+        elif (h_pos.x > t_pos.x) and (h_pos.y < t_pos.y):
+            # still touching
+            pass
+        elif (h_pos.x < t_pos.x) and (h_pos.y < t_pos.y):
+            # still touching
+            pass
+        elif (h_pos.x < t_pos.x) and (h_pos.y > t_pos.y):
+            new_t_pos.x -= 1
+            new_t_pos.y += 1
+
+    return new_h_pos, new_t_pos
+
+
+def move_u(h_pos, t_pos, dist):
+    new_h_pos = h_pos
+    new_t_pos = t_pos
+    for _ in range(dist):
+        new_h_pos, new_t_pos = step_u(new_h_pos, new_t_pos)
+
+    return new_h_pos, new_t_pos
+
+
+def step_d(h_pos, t_pos):
+    if h_pos.metric(t_pos) > 1.5:
+        print(f'ERROR: step_d(): head-tail distance = {h_pos.metric(t_pos)}')
+        sys.exit(9)
+
+    new_h_pos = Position(h_pos.x, h_pos.y)
+    new_t_pos = Position(t_pos.x, t_pos.y)
+
+    if new_h_pos.metric(new_t_pos) <= 1:
+        new_h_pos.y -= 1
+
+        if not new_t_pos.touching(new_h_pos):
+            new_t_pos.y -= 1
+    else:
+        new_h_pos.y -= 1
+        # diagonals: UR, LR, LL, UL
+        if (h_pos.x > t_pos.x) and (h_pos.y > t_pos.y):
+            # still touching
+            pass
+        elif (h_pos.x > t_pos.x) and (h_pos.y < t_pos.y):
+            new_t_pos.x += 1
+            new_t_pos.y -= 1
+        elif (h_pos.x < t_pos.x) and (h_pos.y < t_pos.y):
+            new_t_pos.x -= 1
+            new_t_pos.y -= 1
+        elif (h_pos.x < t_pos.x) and (h_pos.y > t_pos.y):
+            # still touching
+            pass
+
+    return new_h_pos, new_t_pos
 
 def move_d(h_pos, t_pos, dist):
-    pass
+    new_h_pos = h_pos
+    new_t_pos = t_pos
+    for _ in range(dist):
+        new_h_pos, new_t_pos = step_d(new_h_pos, new_t_pos)
+
+    return new_h_pos, new_t_pos
 
 
 def move_rope(h_pos, t_pos, move):
@@ -134,9 +207,9 @@ def move_rope(h_pos, t_pos, move):
     elif direc == 'L':
         new_h_pos, new_t_pos = move_l(new_h_pos, new_t_pos, dist)
     elif direc == 'U':
-        new_h_pos[1] += dist
+        new_h_pos, new_t_pos = move_u(new_h_pos, new_t_pos, dist)
     elif direc == 'D':
-        new_h_pos[1] -= dist
+        new_h_pos, new_t_pos = move_d(new_h_pos, new_t_pos, dist)
 
     return new_h_pos, new_t_pos
 
@@ -194,5 +267,21 @@ h_pos = Position(0, 0)
 t_pos = Position(0, 0)
 print(f'Start: {h_pos}, {t_pos}')
 h_pos, t_pos = move_rope(h_pos, t_pos, ('L', 4))
+print(f'End: {h_pos}, {t_pos}')
+print()
+
+print("Move U")
+h_pos = Position(0, 0)
+t_pos = Position(0, 0)
+print(f'Start: {h_pos}, {t_pos}')
+h_pos, t_pos = move_rope(h_pos, t_pos, ('U', 4))
+print(f'End: {h_pos}, {t_pos}')
+print()
+
+print("Move D")
+h_pos = Position(0, 0)
+t_pos = Position(0, 0)
+print(f'Start: {h_pos}, {t_pos}')
+h_pos, t_pos = move_rope(h_pos, t_pos, ('D', 4))
 print(f'End: {h_pos}, {t_pos}')
 print()
