@@ -4,8 +4,7 @@ import os
 import math
 
 
-debug_p = True
-
+debug_p = False
 
 class Position:
     def __init__(self, x: int, y: int):
@@ -27,6 +26,14 @@ class Position:
 
     def __repr__(self):
         return f'({self.x}, {self.y})'
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
+    def __eq__(self, other):
+        if isinstance(other, Position):
+            return (self.x, self.y) == (other.x, other.y)
+        return NotImplemented
 
 
 def step_r(h_pos, t_pos):
@@ -61,11 +68,12 @@ def step_r(h_pos, t_pos):
     return new_h_pos, new_t_pos
 
 
-def move_r(h_pos, t_pos, dist):
+def move_r(h_pos, t_pos, dist, tail_tour):
     new_h_pos = h_pos
     new_t_pos = t_pos
     for _ in range(dist):
         new_h_pos, new_t_pos = step_r(new_h_pos, new_t_pos)
+        tail_tour.append(Position(new_t_pos.x, new_t_pos.y))
 
     return new_h_pos, new_t_pos
 
@@ -102,11 +110,12 @@ def step_l(h_pos, t_pos):
     return new_h_pos, new_t_pos
 
 
-def move_l(h_pos, t_pos, dist):
+def move_l(h_pos, t_pos, dist, tail_tour):
     new_h_pos = h_pos
     new_t_pos = t_pos
     for _ in range(dist):
         new_h_pos, new_t_pos = step_l(new_h_pos, new_t_pos)
+        tail_tour.append(Position(new_t_pos.x, new_t_pos.y))
 
     return new_h_pos, new_t_pos
 
@@ -143,11 +152,12 @@ def step_u(h_pos, t_pos):
     return new_h_pos, new_t_pos
 
 
-def move_u(h_pos, t_pos, dist):
+def move_u(h_pos, t_pos, dist, tail_tour):
     new_h_pos = h_pos
     new_t_pos = t_pos
     for _ in range(dist):
         new_h_pos, new_t_pos = step_u(new_h_pos, new_t_pos)
+        tail_tour.append(Position(new_t_pos.x, new_t_pos.y))
 
     return new_h_pos, new_t_pos
 
@@ -183,16 +193,18 @@ def step_d(h_pos, t_pos):
 
     return new_h_pos, new_t_pos
 
-def move_d(h_pos, t_pos, dist):
+
+def move_d(h_pos, t_pos, dist, tail_tour):
     new_h_pos = h_pos
     new_t_pos = t_pos
     for _ in range(dist):
         new_h_pos, new_t_pos = step_d(new_h_pos, new_t_pos)
+        tail_tour.append(Position(new_t_pos.x, new_t_pos.y))
 
     return new_h_pos, new_t_pos
 
 
-def move_rope(h_pos, t_pos, move):
+def move_rope(h_pos, t_pos, move, tail_tour):
     # pos is a list [x, y]
     # move is a tuple (direc, dist)
 
@@ -203,13 +215,16 @@ def move_rope(h_pos, t_pos, move):
     dist = move[1]
 
     if direc == 'R':
-        new_h_pos, new_t_pos = move_r(new_h_pos, new_t_pos, dist)
+        new_h_pos, new_t_pos = move_r(new_h_pos, new_t_pos, dist, tail_tour)
     elif direc == 'L':
-        new_h_pos, new_t_pos = move_l(new_h_pos, new_t_pos, dist)
+        new_h_pos, new_t_pos = move_l(new_h_pos, new_t_pos, dist, tail_tour)
     elif direc == 'U':
-        new_h_pos, new_t_pos = move_u(new_h_pos, new_t_pos, dist)
+        new_h_pos, new_t_pos = move_u(new_h_pos, new_t_pos, dist, tail_tour)
     elif direc == 'D':
-        new_h_pos, new_t_pos = move_d(new_h_pos, new_t_pos, dist)
+        new_h_pos, new_t_pos = move_d(new_h_pos, new_t_pos, dist, tail_tour)
+
+    foo = set(tail_tour)
+    print(f'Foo tour: {foo}; len(foo) = {len(foo)}')
 
     return new_h_pos, new_t_pos
 
@@ -218,7 +233,7 @@ def move_rope(h_pos, t_pos, move):
 # Snake - H & T start overlapping, say at (0, 0)
 
 moves = []
-with open('test.txt', 'r') as infile:
+with open('input.txt', 'r') as infile:
     for l in infile:
         tok = l.strip().split()
         direc = tok[0]
@@ -254,34 +269,44 @@ if debug_p:
     print(f'DEBUG: h_pos.touching(t_pos) = {h_pos.touching(t_pos)}')
     print()
 
-print("Move R")
-h_pos = Position(1, 1)
-t_pos = Position(0, 0)
-print(f'Start: {h_pos}, {t_pos}')
-h_pos, t_pos = move_rope(h_pos, t_pos, ('R', 4))
-print(f'End: {h_pos}, {t_pos}')
-print()
+    print("Move R")
+    h_pos = Position(1, 1)
+    t_pos = Position(0, 0)
+    print(f'Start: {h_pos}, {t_pos}')
+    h_pos, t_pos = move_rope(h_pos, t_pos, ('R', 4), [])
+    print(f'End: {h_pos}, {t_pos}')
+    print()
 
-print("Move L")
+    print("Move L")
+    h_pos = Position(0, 0)
+    t_pos = Position(0, 0)
+    print(f'Start: {h_pos}, {t_pos}')
+    h_pos, t_pos = move_rope(h_pos, t_pos, ('L', 4), [])
+    print(f'End: {h_pos}, {t_pos}')
+    print()
+
+    print("Move U")
+    h_pos = Position(0, 0)
+    t_pos = Position(0, 0)
+    print(f'Start: {h_pos}, {t_pos}')
+    h_pos, t_pos = move_rope(h_pos, t_pos, ('U', 4), [])
+    print(f'End: {h_pos}, {t_pos}')
+    print()
+
+    print("Move D")
+    h_pos = Position(0, 0)
+    t_pos = Position(0, 0)
+    print(f'Start: {h_pos}, {t_pos}')
+    h_pos, t_pos = move_rope(h_pos, t_pos, ('D', 4), [])
+    print(f'End: {h_pos}, {t_pos}')
+    print()
+
+
 h_pos = Position(0, 0)
 t_pos = Position(0, 0)
+tail_tour = []
 print(f'Start: {h_pos}, {t_pos}')
-h_pos, t_pos = move_rope(h_pos, t_pos, ('L', 4))
-print(f'End: {h_pos}, {t_pos}')
-print()
-
-print("Move U")
-h_pos = Position(0, 0)
-t_pos = Position(0, 0)
-print(f'Start: {h_pos}, {t_pos}')
-h_pos, t_pos = move_rope(h_pos, t_pos, ('U', 4))
-print(f'End: {h_pos}, {t_pos}')
-print()
-
-print("Move D")
-h_pos = Position(0, 0)
-t_pos = Position(0, 0)
-print(f'Start: {h_pos}, {t_pos}')
-h_pos, t_pos = move_rope(h_pos, t_pos, ('D', 4))
+for m in moves:
+    h_pos, t_pos = move_rope(h_pos, t_pos, m, tail_tour)
 print(f'End: {h_pos}, {t_pos}')
 print()
