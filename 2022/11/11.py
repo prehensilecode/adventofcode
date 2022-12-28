@@ -6,11 +6,13 @@ import regex as re
 DEBUG = True
 
 class Monkey:
-    def __init__(self, index:int, items:list, op:str, test:str):
+    def __init__(self, index:int, items:list, op:str, test:str, true_action:str, false_action:str):
         self.index = index
         self.items = items
         self.op = op
         self.test = test
+        self.true_action = true_action
+        self.false_action = false_action
 
     def throw(self, other):
         if type(other) == Monkey:
@@ -25,7 +27,7 @@ class Monkey:
         return new
 
     def __repr__(self):
-        return f'{self.index}, {self.items}, {self.op}, {self.test}'
+        return f'{self.index}, {self.items}, {self.op}, {self.test}, {self.true_action}, {self.false_action}'
 
 
 def read_monkeys(filename):
@@ -54,7 +56,7 @@ def read_monkeys(filename):
 
             if len(line) == 0:
                 print('FOO', index, items, op, test)
-                monkeys.append(Monkey(index, items, op, test))
+                monkeys.append(Monkey(index, items, op, test, true_action, false_action))
             elif monkey_pat.match(line):
                 index = int(monkey_pat.match(line).group(1))
                 print(f'BAR index = {index}')
