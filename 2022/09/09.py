@@ -229,6 +229,10 @@ def move_rope(h_pos, t_pos, move, tail_tour):
     return new_h_pos, new_t_pos
 
 
+# Part 2 - rope with 10 knots
+def move_knotty_rope(h_pos, t_pos, move, tail_tour):
+    pass
+
 
 # Snake - H & T start overlapping, say at (0, 0)
 
@@ -310,3 +314,22 @@ for m in moves:
     h_pos, t_pos = move_rope(h_pos, t_pos, m, tail_tour)
 print(f'End: {h_pos}, {t_pos}')
 print()
+del tail_tour
+
+#
+# Part 2
+#
+k1_pos = Position(0, 0)
+k2_pos = Position(0, 0)
+k3_pos = Position(0, 0)
+k4_pos = Position(0, 0)
+k5_pos = Position(0, 0)
+k6_pos = Position(0, 0)
+k7_pos = Position(0, 0)
+k8_pos = Position(0, 0)
+k9_pos = Position(0, 0)
+kX_pos = Position(0, 0)
+
+tail_tour = []
+for m in moves:
+    pass
