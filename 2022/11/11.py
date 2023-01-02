@@ -81,7 +81,7 @@ def read_monkeys(filename):
     return monkeys
 
 
-monkeys = read_monkeys('test.txt')
+monkeys = read_monkeys('input.txt')
 
 for m in monkeys:
     print(m)
