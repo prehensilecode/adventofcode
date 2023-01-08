@@ -2,6 +2,7 @@
 import sys
 import os
 import regex as re
+from functools import reduce
 
 DEBUG = True
 
@@ -14,17 +15,14 @@ class Monkey:
         self.true_action = true_action
         self.false_action = false_action
 
-    def throw(self):
-        # all tests are "Divisble by N"
-        divisor = int(self.test.split()[-1])
-
-        while self.items:
-            item = self.items.pop(0)
-            if item % divisor:
-                other = int(self.true_action.split()[-1])
-            else:
-                other = int(self.false_action.split()[-1])
-            return (item, other)
+    def throw_maybe(self, worry: int):
+        _ = self.items.pop(0)
+        print(f'DEBUG: test_worry({worry} = {self.test_worry(worry)})')
+        if self.test_worry(worry):
+            other = int(self.true_action.split()[-1])
+        else:
+            other = int(self.false_action.split()[-1])
+        return other
 
     def catch(self, item):
         self.items.append(item)
@@ -39,6 +37,13 @@ class Monkey:
             exec(self.op, globals(), lcls)
             new = lcls['new']
             return new
+
+    def test_worry(self, worry: int):
+        # all tests are "Divisble by N"
+        divisor = int(self.test.split()[-1])
+        print(f'DEBUG: Monkey.test_worry(): worry = {worry}, divisor = {divisor}')
+
+        return (worry % divisor) == 0
 
     def __repr__(self):
         return f'{self.index}, {self.items}, {self.op}, {self.test}, {self.true_action}, {self.false_action}'
@@ -68,10 +73,13 @@ def read_monkeys(filename):
             line = l.strip()
             print(f'ALOHA: line = {line}')
             lines.append(line)
+    # take care of missing empty line at end of file
+    lines.append('')
 
     n_lines = len(lines)
     for i in range(n_lines):
         line = lines[i]
+        print(f'WTF: line = {line}')
         if (len(line) == 0) or (i == n_lines - 1):
             print('FOO', index, items, op, test)
             monkeys.append(Monkey(index, items, op, test, true_action, false_action))
@@ -113,19 +121,39 @@ if DEBUG:
     print()
 
 # FIXME
-for m in monkeys:
-    insp = m.inspect()
-    if insp:
-        no_of_inspections[m.index] += 1
-        worry = worry // 3
-        item, other_monkey = m.throw()
+# 20 rounds
+for r in range(20):
+    print(f'ROUND {r}')
+    for m in monkeys:
+        print(f'DEBUG: MONKEY {m.index}')
+        print(f'DEBUG:    {m}')
+        while m.items:
+            print(f'DEBUG: m.items = {m.items}')
+            worry = m.inspect()
+            if worry:
+                no_of_inspections[m.index] += 1
+                worry = worry // 3
 
-        if DEBUG:
-            print(f'DEBUG: item = {item}, other_monkey = {other_monkey}')
+                if DEBUG:
+                    print(f'DEBUG: worry = {worry}')
 
-        monkeys[other_monkey].catch(item)
-    else:
-        continue
+                other_monkey = m.throw_maybe(worry)
 
-    print(f'worry = {worry}')
+                if DEBUG:
+                    print(f'DEBUG: worry = {worry}, other_monkey = {other_monkey}')
 
+                monkeys[other_monkey].catch(worry)
+            else:
+                continue
+            worry = 0
+            print()
+        print()
+
+    for m in monkeys:
+        print(m)
+
+print()
+print(f'No. of inspections: {no_of_inspections}')
+
+
+print(reduce((lambda x, y: x*y), sorted(no_of_inspections, reverse=True)[:2]))
