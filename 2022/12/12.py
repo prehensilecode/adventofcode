@@ -2,4 +2,6 @@
 import sys
 import os
 
-print(12)
+with open('test.txt', 'r') as f:
+    for line in f:
+        print(line.strip())
