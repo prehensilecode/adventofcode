@@ -237,7 +237,7 @@ def move_knotty_rope(h_pos, t_pos, move, tail_tour):
 # Snake - H & T start overlapping, say at (0, 0)
 
 moves = []
-with open('input.txt', 'r') as infile:
+with open('test.txt', 'r') as infile:
     for l in infile:
         tok = l.strip().split()
         direc = tok[0]
@@ -330,6 +330,13 @@ k8_pos = Position(0, 0)
 k9_pos = Position(0, 0)
 kX_pos = Position(0, 0)
 
+knots = [k1_pos, k2_pos, k3_pos, k4_pos, k5_pos,
+         k6_pos, k7_pos, k8_pos, k9_pos, kX_pos]
+
 tail_tour = []
 for m in moves:
-    pass
+    for i in range(len(knots) - 1):
+        knots[i], knots[i+1] = move_rope(knots[i], knots[i+1], m, tail_tour)
+
+print(f'{knots}')
+
