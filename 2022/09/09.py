@@ -224,7 +224,7 @@ def move_rope(h_pos, t_pos, move, tail_tour):
         new_h_pos, new_t_pos = move_d(new_h_pos, new_t_pos, dist, tail_tour)
 
     foo = set(tail_tour)
-    print(f'Foo tour: {foo}; len(foo) = {len(foo)}')
+    print(f'Foo tour: {foo}; \n\tlen(foo) = {len(foo)}')
 
     return new_h_pos, new_t_pos
 
